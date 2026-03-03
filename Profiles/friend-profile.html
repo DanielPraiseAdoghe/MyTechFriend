@@ -24,7 +24,7 @@
 body{
     background:var(--bg);
     color:var(--dark-green);
-    animation:fadePage 0.5s ease;
+    animation:fadePage 0.4s ease;
 }
 
 @keyframes fadePage{
@@ -34,7 +34,7 @@ body{
 
 /* COVER */
 .cover{
-    height:200px;
+    height:220px;
     background:linear-gradient(135deg,var(--light-green),var(--dark-green));
 }
 
@@ -42,19 +42,27 @@ body{
 .profile-card{
     background:white;
     width:90%;
-    max-width:1000px;
-    margin:-100px auto 30px auto;
-    border-radius:20px;
+    max-width:1100px;
+    margin:-100px auto 40px auto;
+    border-radius:25px;
     padding:30px;
     box-shadow:0 15px 40px rgba(0,0,0,0.1);
+}
+
+/* BACK */
+.back{
+    margin-bottom:20px;
+    cursor:pointer;
+    color:var(--light-green);
+    font-weight:600;
 }
 
 /* HEADER */
 .profile-header{
     display:flex;
     flex-wrap:wrap;
-    align-items:center;
     gap:25px;
+    align-items:center;
 }
 
 .avatar{
@@ -63,6 +71,18 @@ body{
     border-radius:50%;
     object-fit:cover;
     border:6px solid white;
+    position:relative;
+}
+
+.online-dot{
+    width:18px;
+    height:18px;
+    background:limegreen;
+    border-radius:50%;
+    position:absolute;
+    bottom:10px;
+    right:10px;
+    border:3px solid white;
 }
 
 .profile-info h2{
@@ -75,6 +95,12 @@ body{
     border-radius:20px;
     font-size:13px;
     display:inline-block;
+    margin-top:5px;
+}
+
+.summary{
+    margin-top:10px;
+    color:#555;
 }
 
 /* ACTIONS */
@@ -89,8 +115,8 @@ body{
     border:none;
     border-radius:25px;
     cursor:pointer;
-    font-weight:500;
     transition:0.3s;
+    font-weight:500;
 }
 
 .primary{
@@ -120,6 +146,25 @@ body{
     color:var(--light-green);
 }
 
+/* SECTION TITLE */
+.section-title{
+    margin:25px 0 15px 0;
+}
+
+/* TAGS */
+.tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.tag{
+    background:var(--light-brown);
+    padding:6px 14px;
+    border-radius:20px;
+    font-size:13px;
+}
+
 /* SKILLS */
 .skill{
     margin-bottom:18px;
@@ -139,12 +184,24 @@ body{
     transition:1.5s;
 }
 
-/* BACK */
-.back{
-    margin-bottom:20px;
-    cursor:pointer;
-    color:var(--light-green);
-    font-weight:500;
+/* INTERESTS */
+.interest-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:15px;
+}
+
+.interest{
+    background:var(--bg-light);
+    padding:15px;
+    border-radius:15px;
+    text-align:center;
+    transition:0.3s;
+}
+
+.interest:hover{
+    background:var(--light-green);
+    color:white;
 }
 
 /* RESPONSIVE */
@@ -172,15 +229,19 @@ body{
 <div class="back" onclick="goBack()">← Back to Directory</div>
 
 <div class="profile-header">
-    <img id="avatar" class="avatar">
+    <div style="position:relative;">
+        <img id="avatar" class="avatar">
+        <div class="online-dot"></div>
+    </div>
+
     <div class="profile-info">
         <h2 id="name"></h2>
-        <p id="summary"></p>
         <div id="country" class="country"></div>
+        <p id="summary" class="summary"></p>
     </div>
 
     <div class="actions">
-        <button class="btn primary">Message</button>
+        <button class="btn primary" onclick="toChat()">Message</button>
         <button class="btn secondary">Start Project</button>
     </div>
 </div>
@@ -194,52 +255,77 @@ body{
         <h3 id="rating">0</h3>
         <p>Rating</p>
     </div>
+    <div class="stat">
+        <h3 id="friendsCount">0</h3>
+        <p>Friends</p>
+    </div>
 </div>
 
-<h3>Skills</h3>
+<h3 class="section-title">Hobbies</h3>
+<div class="tags" id="hobbies"></div>
+
+<h3 class="section-title">Skills</h3>
 <div id="skills"></div>
+
+<h3 class="section-title">Interests</h3>
+<div class="interest-grid" id="interests"></div>
 
 </div>
 
 <script>
 
-/* LOAD SELECTED FRIEND */
-const friendData = localStorage.getItem("selectedFriend");
+/* GET STORED FRIEND */
+const data = localStorage.getItem("selectedFriend");
 
-if(!friendData){
+if(!data){
     document.body.innerHTML="<h2 style='text-align:center;margin-top:100px;'>No profile selected.</h2>";
 }else{
-    const friend = JSON.parse(friendData);
+    const friend = JSON.parse(data);
 
     document.getElementById("avatar").src = friend.img;
     document.getElementById("name").innerText = friend.name;
-    document.getElementById("summary").innerText = friend.summary;
     document.getElementById("country").innerText = friend.country;
+    document.getElementById("summary").innerText = friend.summary;
 
     animateCounter("projects", friend.projects);
     animateCounter("rating", friend.rating);
+    animateCounter("friendsCount", Math.floor(Math.random()*80)+20);
 
-    const skillsContainer = document.getElementById("skills");
+    /* HOBBIES (Auto-generated demo) */
+    const hobbies = ["Coding","Reading","Music","Robotics"];
+    hobbies.forEach(h=>{
+        const tag=document.createElement("div");
+        tag.className="tag";
+        tag.innerText=h;
+        document.getElementById("hobbies").appendChild(tag);
+    });
 
+    /* SKILLS */
     friend.skills.forEach(skill=>{
-        const percent = Math.floor(Math.random()*40)+60;
-
-        const wrapper = document.createElement("div");
+        const percent=Math.floor(Math.random()*30)+70;
+        const wrapper=document.createElement("div");
         wrapper.className="skill";
-
         wrapper.innerHTML=`
             ${skill}
             <div class="skill-bar">
                 <div class="skill-fill" style="width:${percent}%"></div>
             </div>
         `;
+        document.getElementById("skills").appendChild(wrapper);
+    });
 
-        skillsContainer.appendChild(wrapper);
+    /* INTERESTS (Auto demo) */
+    const interests=["🌍 Climate Tech","🤖 AI","📱 App Dev","🎨 Design"];
+    interests.forEach(i=>{
+        const div=document.createElement("div");
+        div.className="interest";
+        div.innerText=i;
+        document.getElementById("interests").appendChild(div);
     });
 }
 
 /* COUNTER ANIMATION */
-function animateCounter(id, value){
+function animateCounter(id,value){
     let start=0;
     const end=parseFloat(value);
     const step=end/30;
@@ -255,10 +341,13 @@ function animateCounter(id, value){
     },30);
 }
 
-/* BACK */
 function goBack(){
-    window.location.href="fd_2.html";
+    window.location.href="friends-directory-advanced.html";
 }
+function toChat(){
+    window.location.href="../Chat/chat.html";
+}
+
 
 </script>
 
