@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Friends Directory</title>
+
+<style>
+:root {
+    --bg-light: #f5f5f5;
+    --bg: #f2e3bb;
+    --light-brown: #C0B87A;
+    --light-green: #427A43;
+    --dark-green: #005F02;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:var(--bg);
+    padding:30px;
+    color:var(--dark-green);
+}
+
+/* HEADER */
+.header{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:15px;
+    margin-bottom:25px;
+}
+
+.header h1{
+    font-size:28px;
+}
+
+/* SEARCH + FILTER */
+.controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.controls input,
+.controls select{
+    padding:10px;
+    border-radius:20px;
+    border:1px solid var(--light-brown);
+    background:white;
+}
+
+/* GRID */
+.friends-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:20px;
+}
+
+/* CARD */
+.friend-card{
+    background:white;
+    border-radius:20px;
+    padding:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+    transition:0.3s;
+    position:relative;
+    overflow:hidden;
+}
+
+.friend-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 15px 40px rgba(0,0,0,0.15);
+}
+
+/* ONLINE BADGE */
+.online{
+    position:absolute;
+    top:15px;
+    right:15px;
+    width:12px;
+    height:12px;
+    background:limegreen;
+    border-radius:50%;
+}
+
+/* PROFILE TOP */
+.profile-top{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.avatar{
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    background:var(--light-brown);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+    color:white;
+    font-size:22px;
+}
+
+.name{
+    font-weight:600;
+}
+
+.country{
+    font-size:13px;
+    background:var(--light-brown);
+    padding:3px 10px;
+    border-radius:15px;
+    margin-top:4px;
+    display:inline-block;
+}
+
+/* SUMMARY */
+.summary{
+    margin:15px 0;
+    font-size:14px;
+    color:#444;
+}
+
+/* SKILLS */
+.skills{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.skill{
+    background:var(--bg-light);
+    padding:5px 10px;
+    border-radius:15px;
+    font-size:12px;
+}
+
+/* STATS */
+.stats{
+    display:flex;
+    justify-content:space-between;
+    margin:15px 0;
+    font-size:13px;
+}
+
+/* BUTTON */
+.view-btn{
+    display:block;
+    text-align:center;
+    padding:8px;
+    border-radius:20px;
+    background:var(--light-green);
+    color:white;
+    text-decoration:none;
+    transition:0.3s;
+}
+
+.view-btn:hover{
+    background:var(--dark-green);
+}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+    body{
+        padding:15px;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1>🌿 Friends Network</h1>
+
+    <div class="controls">
+        <input type="text" id="search" placeholder="Search by name...">
+        <select id="filterCountry">
+            <option value="">All Countries</option>
+            <option value="Nigeria">Nigeria</option>
+            <option value="Kenya">Kenya</option>
+            <option value="USA">USA</option>
+        </select>
+    </div>
+</div>
+
+<div class="friends-grid" id="friendsGrid">
+
+    <!-- CARD -->
+    <div class="friend-card" data-name="Aisha" data-country="Nigeria">
+        <div class="online"></div>
+        <div class="profile-top">
+            <div class="avatar">A</div>
+            <div>
+                <div class="name">Aisha Bello</div>
+                <div class="country">🇳🇬 Nigeria</div>
+            </div>
+        </div>
+
+        <div class="summary">
+            Passionate about climate tech and building youth-led innovations.
+        </div>
+
+        <div class="skills">
+            <div class="skill">HTML</div>
+            <div class="skill">JS</div>
+            <div class="skill">UI</div>
+        </div>
+
+        <div class="stats">
+            <span>12 Projects</span>
+            <span>⭐ 4.8</span>
+        </div>
+
+        <a href="profile.html" class="view-btn">View Profile</a>
+    </div>
+
+    <!-- CARD -->
+    <div class="friend-card" data-name="Leo" data-country="Kenya">
+        <div class="profile-top">
+            <div class="avatar">L</div>
+            <div>
+                <div class="name">Leo Mwangi</div>
+                <div class="country">🇰🇪 Kenya</div>
+            </div>
+        </div>
+
+        <div class="summary">
+            Robotics enthusiast building AI-powered school tools.
+        </div>
+
+        <div class="skills">
+            <div class="skill">Python</div>
+            <div class="skill">AI</div>
+            <div class="skill">Robotics</div>
+        </div>
+
+        <div class="stats">
+            <span>9 Projects</span>
+            <span>⭐ 4.6</span>
+        </div>
+
+        <a href="profile.html" class="view-btn">View Profile</a>
+    </div>
+
+</div>
+
+<script>
+const searchInput = document.getElementById("search");
+const filterCountry = document.getElementById("filterCountry");
+const cards = document.querySelectorAll(".friend-card");
+
+function filterFriends(){
+    const searchValue = searchInput.value.toLowerCase();
+    const countryValue = filterCountry.value;
+
+    cards.forEach(card=>{
+        const name = card.dataset.name.toLowerCase();
+        const country = card.dataset.country;
+
+        const matchName = name.includes(searchValue);
+        const matchCountry = countryValue === "" || country === countryValue;
+
+        if(matchName && matchCountry){
+            card.style.display="block";
+        }else{
+            card.style.display="none";
+        }
+    });
+}
+
+searchInput.addEventListener("input", filterFriends);
+filterCountry.addEventListener("change", filterFriends);
+</script>
+
+</body>
+</html>

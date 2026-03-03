@@ -1,0 +1,15 @@
+:root{
+    --bg-light: #f5f5f5;
+    --bg: #f2e3bb;
+    --light-brown: #C0B87A;
+    --light-green: #427A43;
+    --dark-green: #005F02;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: 'Segoe UI', sans-serif;
+    transition: all 0.3s ease;
+}

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Tech-Friend | Chat</title>
+
+<!-- FONT AWESOME -->
+<script src="https://kit.fontawesome.com/75d8986235.js" crossorigin="anonymous"></script>
+
+<style>
+:root{
+    --bg-light: #f5f5f5;
+    --bg: #eeeeee;
+    --light-brown: #ddaed3;
+    --light-blue: #6594b1;
+    --dark-blue: #213c51;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body{
+    background: var(--bg);
+    min-height: 100vh;
+    max-height:100vh;
+    display:flex;
+    overflow-y:auto;
+}
+
+/* SIDEBAR */
+.sidebar{
+    width:280px;
+    background: var(--dark-blue);
+    color:white;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    transition:0.3s;
+}
+
+.sidebar h2{
+    margin-bottom:20px;
+}
+
+.friend{
+    padding:12px;
+    border-radius:10px;
+    cursor:pointer;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+}
+
+.friend:hover{
+    background: var(--light-blue);
+}
+
+.status{
+    width:8px;
+    height:8px;
+    background:limegreen;
+    border-radius:50%;
+}
+
+/* CHAT AREA */
+.chat-container{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    background: var(--bg-light);
+}
+
+/* HEADER */
+.chat-header{
+    background:white;
+    padding:15px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:1px solid #ddd;
+}
+
+.header-left{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.online-text{
+    font-size:12px;
+    color:green;
+}
+
+.chat-actions i{
+    margin-left:15px;
+    cursor:pointer;
+    color: var(--light-blue);
+}
+
+.chat-actions i:hover{
+    color: var(--dark-blue);
+}
+
+/* MESSAGES */
+.messages{
+    flex:1;
+    padding:20px;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    scroll-behavior:smooth;
+}
+
+.message{
+    max-width:65%;
+    padding:10px 15px;
+    border-radius:15px;
+    font-size:14px;
+    position:relative;
+    animation:fadeIn 0.3s ease;
+}
+
+.sent{
+    background: var(--light-brown);
+    color:white;
+    align-self:flex-end;
+}
+
+.received{
+    background:white;
+    color: var(--dark-blue);
+}
+
+.timestamp{
+    font-size:10px;
+    margin-top:5px;
+    opacity:0.7;
+}
+
+.read{
+    font-size:10px;
+    text-align:right;
+    margin-top:2px;
+}
+
+@keyframes fadeIn{
+    from{opacity:0; transform:translateY(5px);}
+    to{opacity:1; transform:translateY(0);}
+}
+
+/* TYPING */
+.typing{
+    font-size:12px;
+    color:gray;
+    margin-left:10px;
+}
+
+/* INPUT AREA */
+.chat-input{
+    background:white;
+    padding:10px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.chat-input input{
+    flex:1;
+    padding:10px;
+    border-radius:20px;
+    border:1px solid #ccc;
+}
+
+.chat-input i{
+    font-size:18px;
+    cursor:pointer;
+    color: var(--light-blue);
+}
+
+.chat-input i:hover{
+    color: var(--dark-blue);
+}
+
+/* MODAL */
+.modal{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.6);
+    display:none;
+    justify-content:center;
+    align-items:center;
+}
+
+.modal-content{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    text-align:center;
+}
+
+video{
+    width:300px;
+    border-radius:10px;
+}
+
+/* MOBILE */
+.menu-btn{
+    display:none;
+    cursor:pointer;
+    font-size:20px;
+}
+
+@media(max-width:900px){
+    .sidebar{
+        position:absolute;
+        left:-280px;
+        height:100%;
+        z-index:10;
+    }
+
+    .sidebar.active{
+        left:0;
+    }
+
+    .menu-btn{
+        display:block;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar" id="sidebar">
+    <h2>Friends</h2>
+    <div class="friend">Aisha <div class="status"></div></div>
+    <div class="friend">Leo <div class="status"></div></div>
+    <div class="friend">Maria <div class="status"></div></div>
+</div>
+
+<div class="chat-container">
+
+    <div class="chat-header">
+        <div class="header-left">
+            <i class="fas fa-bars menu-btn" onclick="toggleSidebar()"></i>
+            <div>
+                <strong>Aisha 🌍</strong>
+                <div class="online-text">Online</div>
+            </div>
+        </div>
+        <div class="chat-actions">
+            <i class="fas fa-phone" onclick="startVoiceCall()"></i>
+            <i class="fas fa-video" onclick="startVideoCall()"></i>
+            <i class="fas fa-info-circle"></i>
+        </div>
+    </div>
+
+    <div class="messages" id="messages">
+        <div class="message received">
+            Ready to finish the coding project?
+            <div class="timestamp">3:42 PM</div>
+        </div>
+    </div>
+
+    <div class="typing" id="typing"></div>
+
+    <div class="chat-input">
+        <i class="fas fa-paperclip" onclick="document.getElementById('fileInput').click()"></i>
+        <i class="fas fa-microphone" onclick="startRecording()"></i>
+        <input type="file" id="fileInput" hidden>
+        <input type="text" id="chatText" placeholder="Type a message...">
+        <i class="fas fa-paper-plane" onclick="sendMessage()"></i>
+    </div>
+
+</div>
+
+<!-- CALL MODAL -->
+<div class="modal" id="callModal">
+    <div class="modal-content">
+        <h3 id="callType">Calling...</h3>
+        <video id="videoPreview" autoplay muted></video>
+        <br><br>
+        <button onclick="endCall()" style="background:red;color:white;padding:8px 20px;border:none;border-radius:20px;">End Call</button>
+    </div>
+</div>
+
+<script>
+const messages = document.getElementById("messages");
+const typing = document.getElementById("typing");
+
+function sendMessage(){
+    const input = document.getElementById("chatText");
+    if(input.value.trim()==="") return;
+
+    const now = new Date();
+    const time = now.getHours() + ":" + now.getMinutes();
+
+    const msg = document.createElement("div");
+    msg.className="message sent";
+    msg.innerHTML=`
+        ${input.value}
+        <div class="timestamp">${time}</div>
+        <div class="read">✓✓ Read</div>
+    `;
+    messages.appendChild(msg);
+    input.value="";
+    messages.scrollTop = messages.scrollHeight;
+
+    simulateTyping();
+}
+
+function simulateTyping(){
+    typing.innerHTML="Aisha is typing...";
+    setTimeout(()=>{
+        typing.innerHTML="";
+    },2000);
+}
+
+/* FILE */
+document.getElementById("fileInput").addEventListener("change", function(){
+    const file=this.files[0];
+    if(file){
+        const msg=document.createElement("div");
+        msg.className="message sent";
+        msg.innerHTML=`📁 ${file.name}`;
+        messages.appendChild(msg);
+    }
+});
+
+/* VOICE RECORD */
+let mediaRecorder;
+let audioChunks=[];
+function startRecording(){
+navigator.mediaDevices.getUserMedia({audio:true})
+.then(stream=>{
+mediaRecorder=new MediaRecorder(stream);
+mediaRecorder.start();
+mediaRecorder.ondataavailable=e=>audioChunks.push(e.data);
+mediaRecorder.onstop=()=>{
+const blob=new Blob(audioChunks);
+const url=URL.createObjectURL(blob);
+const audio=document.createElement("audio");
+audio.controls=true;
+audio.src=url;
+const msg=document.createElement("div");
+msg.className="message sent";
+msg.appendChild(audio);
+messages.appendChild(msg);
+audioChunks=[];
+};
+setTimeout(()=>mediaRecorder.stop(),3000);
+});
+}
+
+/* CALLS */
+function startVideoCall(){
+document.getElementById("callType").innerText="Video Call";
+document.getElementById("callModal").style.display="flex";
+navigator.mediaDevices.getUserMedia({video:true})
+.then(stream=>{
+document.getElementById("videoPreview").srcObject=stream;
+});
+}
+function startVoiceCall(){
+document.getElementById("callType").innerText="Voice Call";
+document.getElementById("callModal").style.display="flex";
+}
+function endCall(){
+document.getElementById("callModal").style.display="none";
+const video=document.getElementById("videoPreview");
+if(video.srcObject){
+video.srcObject.getTracks().forEach(track=>track.stop());
+}
+}
+
+/* SIDEBAR */
+function toggleSidebar(){
+document.getElementById("sidebar").classList.toggle("active");
+}
+</script>
+
+</body>
+</html>

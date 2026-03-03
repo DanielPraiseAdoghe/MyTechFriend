@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Friend Profile</title>
+
+<style>
+:root {
+    --bg-light: #f5f5f5;
+    --bg: #f2e3bb;
+    --light-brown: #C0B87A;
+    --light-green: #427A43;
+    --dark-green: #005F02;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:var(--bg);
+    color:var(--dark-green);
+    animation:fadePage 0.5s ease;
+}
+
+@keyframes fadePage{
+    from{opacity:0;}
+    to{opacity:1;}
+}
+
+/* COVER */
+.cover{
+    height:200px;
+    background:linear-gradient(135deg,var(--light-green),var(--dark-green));
+}
+
+/* CARD */
+.profile-card{
+    background:white;
+    width:90%;
+    max-width:1000px;
+    margin:-100px auto 30px auto;
+    border-radius:20px;
+    padding:30px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.1);
+}
+
+/* HEADER */
+.profile-header{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:25px;
+}
+
+.avatar{
+    width:140px;
+    height:140px;
+    border-radius:50%;
+    object-fit:cover;
+    border:6px solid white;
+}
+
+.profile-info h2{
+    margin-bottom:8px;
+}
+
+.country{
+    background:var(--light-brown);
+    padding:6px 14px;
+    border-radius:20px;
+    font-size:13px;
+    display:inline-block;
+}
+
+/* ACTIONS */
+.actions{
+    margin-left:auto;
+    display:flex;
+    gap:10px;
+}
+
+.btn{
+    padding:10px 20px;
+    border:none;
+    border-radius:25px;
+    cursor:pointer;
+    font-weight:500;
+    transition:0.3s;
+}
+
+.primary{
+    background:var(--light-green);
+    color:white;
+}
+
+.primary:hover{
+    background:var(--dark-green);
+}
+
+.secondary{
+    background:var(--light-brown);
+    color:white;
+}
+
+/* STATS */
+.stats{
+    display:flex;
+    justify-content:space-around;
+    margin:30px 0;
+    text-align:center;
+}
+
+.stat h3{
+    font-size:26px;
+    color:var(--light-green);
+}
+
+/* SKILLS */
+.skill{
+    margin-bottom:18px;
+}
+
+.skill-bar{
+    height:8px;
+    background:#ddd;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.skill-fill{
+    height:100%;
+    background:var(--light-green);
+    width:0;
+    transition:1.5s;
+}
+
+/* BACK */
+.back{
+    margin-bottom:20px;
+    cursor:pointer;
+    color:var(--light-green);
+    font-weight:500;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+    .profile-header{
+        flex-direction:column;
+        text-align:center;
+    }
+    .actions{
+        margin:15px 0 0 0;
+    }
+    .stats{
+        flex-direction:column;
+        gap:15px;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="cover"></div>
+
+<div class="profile-card">
+
+<div class="back" onclick="goBack()">← Back to Directory</div>
+
+<div class="profile-header">
+    <img id="avatar" class="avatar">
+    <div class="profile-info">
+        <h2 id="name"></h2>
+        <p id="summary"></p>
+        <div id="country" class="country"></div>
+    </div>
+
+    <div class="actions">
+        <button class="btn primary">Message</button>
+        <button class="btn secondary">Start Project</button>
+    </div>
+</div>
+
+<div class="stats">
+    <div class="stat">
+        <h3 id="projects">0</h3>
+        <p>Projects</p>
+    </div>
+    <div class="stat">
+        <h3 id="rating">0</h3>
+        <p>Rating</p>
+    </div>
+</div>
+
+<h3>Skills</h3>
+<div id="skills"></div>
+
+</div>
+
+<script>
+
+/* LOAD SELECTED FRIEND */
+const friendData = localStorage.getItem("selectedFriend");
+
+if(!friendData){
+    document.body.innerHTML="<h2 style='text-align:center;margin-top:100px;'>No profile selected.</h2>";
+}else{
+    const friend = JSON.parse(friendData);
+
+    document.getElementById("avatar").src = friend.img;
+    document.getElementById("name").innerText = friend.name;
+    document.getElementById("summary").innerText = friend.summary;
+    document.getElementById("country").innerText = friend.country;
+
+    animateCounter("projects", friend.projects);
+    animateCounter("rating", friend.rating);
+
+    const skillsContainer = document.getElementById("skills");
+
+    friend.skills.forEach(skill=>{
+        const percent = Math.floor(Math.random()*40)+60;
+
+        const wrapper = document.createElement("div");
+        wrapper.className="skill";
+
+        wrapper.innerHTML=`
+            ${skill}
+            <div class="skill-bar">
+                <div class="skill-fill" style="width:${percent}%"></div>
+            </div>
+        `;
+
+        skillsContainer.appendChild(wrapper);
+    });
+}
+
+/* COUNTER ANIMATION */
+function animateCounter(id, value){
+    let start=0;
+    const end=parseFloat(value);
+    const step=end/30;
+
+    const interval=setInterval(()=>{
+        start+=step;
+        if(start>=end){
+            start=end;
+            clearInterval(interval);
+        }
+        document.getElementById(id).innerText =
+            id==="rating" ? start.toFixed(1) : Math.floor(start);
+    },30);
+}
+
+/* BACK */
+function goBack(){
+    window.location.href="fd_2.html";
+}
+
+</script>
+
+</body>
+</html>
